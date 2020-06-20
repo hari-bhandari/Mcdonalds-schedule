@@ -1,42 +1,47 @@
-import React, {useContext, useState,useEffect} from 'react';
+import React, {useContext, useState, useEffect} from 'react';
 import AuthContext from "../../context/auth/authContext";
 import AlertContext from "../../context/alert/AlertContext";
 import Spinner from "../spinner/Spinner";
+
 const ManageAccount = () => {
 
-    const authContext=useContext(AuthContext);
+    const authContext = useContext(AuthContext);
 
 
-    const[fields,setFields]=useState({
-        name:'',
-        email:''
+    const [fields, setFields] = useState({
+        name: '',
+        email: ''
     });
-    const alertContext= useContext(AlertContext);
-    const {setAlert}=alertContext;
+    const alertContext = useContext(AlertContext);
+    const {setAlert} = alertContext;
 
-    const {updateDetails,user,loadUser,error,loading}=authContext;
-    const onChange=(e)=>{
-        setFields({...fields,[e.target.name]:e.target.value})
+    const {updateDetails, user, loadUser, error, loading} = authContext;
+    const onChange = (e) => {
+        setFields({...fields, [e.target.name]: e.target.value})
     }
-    useEffect(()=>{
+    useEffect(() => {
         loadUser();
         //eslint-disable-next-line
-    },[])
-    useEffect(()=> {
-        if(user!==null){
-        setFields({name: user.name, email: user.email})
-    }},[user])
-    const {name,email}=fields
-    const onSubmit=((e)=>{
-        e.preventDefault();
-        if(error!==null){
-            setAlert(error,'danger')
+    }, [])
+    useEffect(() => {
+        if (user !== null) {
+            setFields({name: user.name, email: user.email})
         }
-        else {
-            updateDetails({name,email})
+    }, [user])
+    const {name, email} = fields
+    const onSubmit = ((e) => {
+        e.preventDefault();
+        if (error !== null) {
+            setAlert(`${fields.email} is not a valid email address`, 'danger')
+        }
+        if (fields.email == email) {
+            setAlert(`Please enter a different email to ${fields.email}`, 'warning')
+        } else {
+            updateDetails({name, email})
+            setAlert(`Email has been Changed to ${fields.email}`, 'success')
         }
     })
-    if(loading){
+    if (loading) {
         return (
             <Spinner/>
         )

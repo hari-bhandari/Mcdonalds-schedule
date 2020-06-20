@@ -5,8 +5,7 @@ import authReducer from './authReducer';
 import setAuthToken from "../../utils/setAuthToken";
 
 import {
-    GET_BOOTCAMPS,
-    GET_TOKEN, REMOVE_TOKEN, LOAD_USER, UPDATE_DETAILS, REQUEST_DENIED, CLEAR_ERRORS, GET_BOOTCAMP, GET_BOOTCAMP_ERROR, LOGOUT, LOAD_USER_FAIL
+    GET_TOKEN, REMOVE_TOKEN, LOAD_USER, UPDATE_DETAILS, REQUEST_DENIED, CLEAR_ERRORS,LOGOUT, LOAD_USER_FAIL
 } from '../types'
 const AuthState=props=>{
     const initialState = {
