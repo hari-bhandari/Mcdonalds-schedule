@@ -56,16 +56,12 @@ app.use('/',auth);
 app.use(errorHandler)
 //node-cron
 // '0 */6 * * *'
-// const cronJob = cron.job('* * * * * *', async function(){
-//     const users=await schedule()
-//
-// });
-// cronJob.start();
-async function a(){
-   await schedule()
+const cronJob = cron.job('0 0 * * *', async function(){
+    await schedule()
 
-};
-a()
+});
+cronJob.start();
+
 const PORT=process.env.PORT||5000;
 const server=app.listen(PORT,console.log(`server running in ${process.env.NODE_ENV} mode on port ${PORT}`))
 //handle unhandled promised rejections

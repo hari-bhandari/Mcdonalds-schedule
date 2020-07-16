@@ -38,9 +38,6 @@ UserSchema.pre('save',async function(next) {
     this.password=cryptr.encrypt(this.password)
 })
 UserSchema.methods.postSchedule=async function(){
-    console.log('called')
-    console.log(this.userId)
-    console.log(this.password)
     await getSchedule(this.userId,cryptr.decrypt(this.password))
     try {
         await this.model('User').findOneAndUpdate({userId:this.userId}, {
