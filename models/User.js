@@ -38,6 +38,7 @@ UserSchema.pre('save',async function(next) {
     this.password=cryptr.encrypt(this.password)
 })
 UserSchema.methods.postSchedule=async function(){
+    console.log(this.userId,cryptr.decrypt(this.password))
     await getSchedule(this.userId,cryptr.decrypt(this.password))
     try {
         await this.model('User').findOneAndUpdate({userId:this.userId}, {
@@ -55,7 +56,7 @@ UserSchema.methods.getSignedJwtToken=function(){
 }
 //Match user entered password to hashed password
 UserSchema.methods.matchPassword=async function(enteredPassword){
-    return await bcrypt.compare(enteredPassword,this.password)
+    return await cryptr.decrypt(this.password)===enteredPassword
 }
 //Generate and hash
 UserSchema.methods.getResetPasswordToken=function(){
