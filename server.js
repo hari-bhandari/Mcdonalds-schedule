@@ -4,8 +4,6 @@ const dotenv=require('dotenv');
 const morgan=require('morgan')
 const errorHandler=require('./middleware/error')
 const connectDB=require('./config/db')
-const fileUpload=require('express-fileupload')
-const cookieParser=require('cookie-parser')
 const mongoSanitize=require('express-mongo-sanitize')
 const helmet=require('helmet')
 const xss=require('xss-clean')
@@ -16,21 +14,13 @@ const cors=require('cors')
 //env vars
 dotenv.config({path:'./config/config.env'});
 //ROutes files
-const bootcamps=require('./Routes/bootcamps');
-const courses=require('./Routes/courses');
 const auth=require('./Routes/auth');
-const users =require('./Routes/users');
-const reviews =require('./Routes/reviews');
-const logger=require('./middleware/logger')
 
 const app= express();
 //connect to the server
 connectDB();
 //Body parser
 app.use(express.json());
-
-//Cookie parser
-app.use(cookieParser())
 
 //sanitize data
 app.use(mongoSanitize())
@@ -40,8 +30,6 @@ if(process.env.NODE_ENV==='development'){
 }
 //helmet for headers
 app.use(helmet())
-//file upload
-app.use(fileUpload());
 //prevent xss attcs
 app.use(xss())
 //rate limit
@@ -57,11 +45,7 @@ app.use(cors())
 //set static folder
 app.use(express.static(path.join(__dirname,'public')))
 //Mount router
-app.use('/api/v1/bootcamps',bootcamps);
-app.use('/api/v1/courses',courses);
-app.use('/api/v1/auth/users',users);
-app.use('/api/v1/auth',auth);
-app.use('/api/v1/reviews',reviews);
+app.use('/',auth);
 
 
 //error handler middle ware
