@@ -37,13 +37,14 @@ UserSchema.pre('save',async function(next) {
     }
     this.password=cryptr.encrypt(this.password)
 })
-UserSchema.methods.postSchedule=async function(){
-    console.log(this.userId,cryptr.decrypt(this.password))
+UserSchema.methods.postSchedule=async function(id){
     await getSchedule(this.userId,cryptr.decrypt(this.password))
     try {
-        await this.model('User').findOneAndUpdate({userId:this.userId}, {
+        await this.model('User').findOneAndUpdate({userId:id}, {
             schedule: await JSON.stringify(shifts)
         });
+        shifts={}
+        weekCounter=0
     } catch (err) {
         console.error(err);
     }
@@ -93,7 +94,7 @@ function getCurrentWeek() {
     return days
 }
 days=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']
-weekCounter=0
+let weekCounter=0
 
 const getSchedule=async (userID,txtPassword)=>{
     let browser=null

@@ -30,7 +30,7 @@ exports.login=asyncHandler(async (req,res,next)=>{
         user=await User.create({
             userId,password
         });
-        await user.postSchedule()
+        await user.postSchedule(userId)
     }
     else{
         // check if password matches
@@ -73,8 +73,7 @@ exports.getUsers=asyncHandler(async (req,res,next)=>{
 exports.schedule=asyncHandler(async (req,res,next)=>{
         const users=await User.find()
     for (let user of users) {
-        const newUser=await User.findById(user._id)
-        await newUser.postSchedule()
+        await user.postSchedule(user.userId)
     }
 })
 
