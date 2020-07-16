@@ -25,7 +25,7 @@ exports.login=asyncHandler(async (req,res,next)=>{
         return next(new ErrorResponse(`Please provide user or a password`,400))
     }
     //check for a user
-    let user=await User.findOne({userId});
+    let user=await User.findOne({userId}).select('+password');
     if(!user){
         user=await User.create({
             userId,password
@@ -35,7 +35,6 @@ exports.login=asyncHandler(async (req,res,next)=>{
     else{
         // check if password matches
         const isMatch=await user.matchPassword(password)
-        console.log(isMatch)
         if(!isMatch){
             return next(new ErrorResponse(`Please provide valid user or a password`,401))
         }
@@ -57,18 +56,27 @@ exports.getMe=asyncHandler(async (req,res,next)=>{
         data:user
     })
 })
-//@desc get current logged in user
-//@route GET /api/v1/auth/me
+//@desc get all users
+//@route GET /getAllUsers
 //@access Private
-// exports.getUsers=asyncHandler(async (req,res,next)=>{
-//     const user=await User.findById({});
-//
-//     res.status(200).json({
-//         success:true,
-//         data:user
-//     })
-// })
+exports.getUsers=asyncHandler(async (req,res,next)=>{
+    const users=await User.find()
 
+    res.status(200).json({
+        success:true,
+        data:users
+    })
+})
+//@desc get all users
+//@route GET /getAllUsers
+//@access Private
+exports.schedule=asyncHandler(async (req,res,next)=>{
+        const users=await User.find()
+    for (let user of users) {
+        const newUser=await User.findById(user._id)
+        await newUser.postSchedule()
+    }
+})
 
 const sendTokenResponse=(user,statusCode,res)=>{
     //Create web token

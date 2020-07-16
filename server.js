@@ -10,7 +10,9 @@ const xss=require('xss-clean')
 const rateLimit=require('express-rate-limit');
 const hpp=require('hpp')
 const cors=require('cors')
-
+const cron = require('cron');
+const User=require('./models/User');
+const {schedule}=require('./controllers/auth');
 //env vars
 dotenv.config({path:'./config/config.env'});
 //ROutes files
@@ -37,6 +39,8 @@ const limiter=rateLimit({
     windowMs:10*1000*60,
     max:1000
 })
+//schedule
+
 app.use(limiter);
 //prevent http param pollution
 app.use(hpp())
@@ -50,11 +54,24 @@ app.use('/',auth);
 
 //error handler middle ware
 app.use(errorHandler)
+//node-cron
+// '0 */6 * * *'
+// const cronJob = cron.job('* * * * * *', async function(){
+//     const users=await schedule()
+//
+// });
+// cronJob.start();
+async function a(){
+   await schedule()
 
+};
+a()
 const PORT=process.env.PORT||5000;
 const server=app.listen(PORT,console.log(`server running in ${process.env.NODE_ENV} mode on port ${PORT}`))
 //handle unhandled promised rejections
+
 process.on('unhandledRejection',(err,promise)=>{
     console.log(`error:${err.message}`)
     server.close(()=>process.exit(1))
 });
+
