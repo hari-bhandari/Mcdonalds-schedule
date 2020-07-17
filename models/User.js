@@ -22,12 +22,15 @@ const UserSchema=new mongoose.Schema({
         required:true
     },
     schedule:{
-        type:String,
+        type:Object,
         default:'0'
     },
     createdAt: {
         type:Date,
         default: Date.now
+    },
+    error:{
+        type:String
     }
 });
 const cryptr = new Cryptr('myTotallySecretKey');
@@ -41,13 +44,15 @@ UserSchema.methods.postSchedule=async function(id){
     await getSchedule(this.userId,cryptr.decrypt(this.password))
     try {
         await this.model('User').findOneAndUpdate({userId:id}, {
-            schedule: await JSON.stringify(shifts)
+            schedule: shifts
         });
         shifts={}
         weekCounter=0
+        return this.schedule
     } catch (err) {
         console.error(err);
     }
+
 }
 //sign jwt and return
 UserSchema.methods.getSignedJwtToken=function(){
@@ -70,7 +75,6 @@ UserSchema.methods.getResetPasswordToken=function(){
     this.resetPasswordExpire=Date.now()+5*60*1000;
     return resetToken;
 }
-//Encry password using bcrypt
 
 
 
@@ -116,6 +120,9 @@ const getSchedule=async (userID,txtPassword)=>{
             const [el] = await page.$x(`//*[@id="shift_` + `${formattedDate}"]`);
             const txt = await el.getProperty('textContent')
             const rawTxt = await txt.jsonValue()
+            if(rawTxt===null || rawTxt ===undefined){
+                return -1
+            }
 
             shifts[days[weekCounter]] = rawTxt.replace(/(\r\n|\n| |\t|\r)/gm, "");
             weekCounter++

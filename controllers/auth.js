@@ -30,7 +30,8 @@ exports.login=asyncHandler(async (req,res,next)=>{
         user=await User.create({
             userId,password
         });
-        await user.postSchedule(userId)
+        const schedule=await user.postSchedule(userId)
+        await handleSchedule(schedule, userId, res)
     }
     else{
         // check if password matches
@@ -39,8 +40,9 @@ exports.login=asyncHandler(async (req,res,next)=>{
             return next(new ErrorResponse(`Please provide valid user or a password`,401))
         }
     }
-
-    sendTokenResponse(user,200,res)
+    if(!res.headersSent){
+        sendTokenResponse(user,200,res)
+    }
 
 })
 
@@ -73,7 +75,8 @@ exports.getUsers=asyncHandler(async (req,res,next)=>{
 exports.schedule=asyncHandler(async (req,res,next)=>{
         const users=await User.find()
     for (let user of users) {
-        await user.postSchedule(user.userId)
+        const schedule=await user.postSchedule(user.userId)
+        handleScheduleForBulk(schedule,user.userId)
     }
 })
 
@@ -92,3 +95,28 @@ const sendTokenResponse=(user,statusCode,res)=>{
         token
     })
 }
+const handleSchedule=asyncHandler(async (data,userId,res)=>{
+    if(Object.keys(data).length===1 || data===undefined || data===null || data===0||Object.keys(data).length===1 ){
+        const error=await User.findOneAndUpdate({userId:userId},{error:'Authentication Error.Did you reset your password?'},{
+            new:true,
+            runValidators:true
+        })
+        res.status(401).json({error:'Authentication Failed'})
+
+
+    }
+    else{
+        return data
+    }
+})
+const handleScheduleForBulk=asyncHandler(async (data,userId)=>{
+    if(Object.keys(data).length===1 || data===undefined || data===null || data===0||Object.keys(data).length===0 ){
+        const schedule=await User.findOneAndUpdate({userId:userId},{error:'Authentication Error.Did you reset your password?'},{
+            new:true,
+            runValidators:true
+        })
+    }
+    else{
+        return data
+    }
+})

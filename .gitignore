@@ -1,7 +1,7 @@
 node_modules
 config/config.env
 
-
+/client/node_modules
 /client/build
 
 .DS_Store
