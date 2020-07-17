@@ -5,11 +5,16 @@ import Navbar from "./components/Navbar";
 import Login from "./components/Login/Login";
 import About from "./components/About";
 import Home from "./components/Pages/Home";
-import ScheduleState from "./context/bootcamps/ScheduleState";
+import AuthState from "./context/auth/AuthState";
+import setAuthToken from "./utils/setAuthToken";
+
+if(localStorage.token){
+    setAuthToken(localStorage.token)
+}
 
 function App() {
     return (
-        <ScheduleState>
+        <AuthState>
             <div className="App">
                 <Router>
                     <Navbar/> {/*Navbar*/}
@@ -21,7 +26,7 @@ function App() {
                     </Switch>
                 </Router>
             </div>
-        </ScheduleState>
+        </AuthState>
     );
 }
 

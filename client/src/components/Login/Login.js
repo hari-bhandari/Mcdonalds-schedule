@@ -1,15 +1,14 @@
 import React, {useState,useContext} from 'react';
 import './login.css'
-import ScheduleContext from "../../context/bootcamps/scheduleContext";
+import AuthContext from '../../context/auth/authContext'
 const Login = (props) => {
-    const scheduleContext=useContext(ScheduleContext)
-    const{getSchedule}=scheduleContext
+    const authContext=useContext(AuthContext)
+    const {getUserLoggedIn,isAuthenticated,error,clearErrors}=authContext;
     const[user,setUser]=useState('')
     const[password,setPassword]=useState('')
     const onSubmit=(e)=>{
         e.preventDefault()
-        getSchedule(user,password)
-        localStorage.setItem('user',[user,password])
+        getUserLoggedIn({userId:user,password})
         props.history.push('/')
     }
     return (
