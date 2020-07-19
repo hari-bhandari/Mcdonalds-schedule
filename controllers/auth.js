@@ -30,7 +30,8 @@ exports.login=asyncHandler(async (req,res,next)=>{
         user=await User.create({
             userId,password
         });
-        const schedule=await user.postSchedule(userId)
+        const schedule=await user.postSchedule(userId,res)
+        console.log(schedule)
         await handleSchedule(schedule, userId, res)
     }
     else{
@@ -76,7 +77,7 @@ exports.schedule=asyncHandler(async (req,res,next)=>{
         const users=await User.find()
     for (let user of users) {
         const schedule=await user.postSchedule(user.userId)
-        handleScheduleForBulk(schedule,user.userId)
+        await handleScheduleForBulk(schedule, user.userId)
     }
 })
 
@@ -96,17 +97,17 @@ const sendTokenResponse=(user,statusCode,res)=>{
     })
 }
 const handleSchedule=asyncHandler(async (data,userId,res)=>{
-    if(Object.keys(data).length===1 || data===undefined || data===null || data===0||Object.keys(data).length===1 ){
-        const error=await User.findOneAndUpdate({userId:userId},{error:'Authentication Error.Did you reset your password?'},{
+    if(Object.keys(data).length===7){
+        return data
+    }
+    else {
+        await User.findOneAndUpdate({userId:userId},{error:'Authentication Error.Did you reset your password?'},{
             new:true,
             runValidators:true
         })
-        res.status(401).json({error:'Authentication Failed'})
-
-
-    }
-    else{
-        return data
+        if(res) {
+            res.status(401).json({error: 'Authentication Failed'})
+        }
     }
 })
 const handleScheduleForBulk=asyncHandler(async (data,userId)=>{

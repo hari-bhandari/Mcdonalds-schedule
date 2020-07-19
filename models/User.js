@@ -46,9 +46,8 @@ UserSchema.methods.postSchedule=async function(id){
         await this.model('User').findOneAndUpdate({userId:id}, {
             schedule: shifts
         });
-        shifts={}
         weekCounter=0
-        return this.schedule
+        return shifts
     } catch (err) {
         console.error(err);
     }
@@ -101,6 +100,7 @@ days=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']
 let weekCounter=0
 
 const getSchedule=async (userID,txtPassword)=>{
+    shifts={}
     let browser=null
     try {
         browser = await puppeteer.launch({headless:false});
@@ -120,14 +120,9 @@ const getSchedule=async (userID,txtPassword)=>{
             const [el] = await page.$x(`//*[@id="shift_` + `${formattedDate}"]`);
             const txt = await el.getProperty('textContent')
             const rawTxt = await txt.jsonValue()
-            if(rawTxt===null || rawTxt ===undefined){
-                return -1
-            }
-
             shifts[days[weekCounter]] = rawTxt.replace(/(\r\n|\n| |\t|\r)/gm, "");
             weekCounter++
         }
-        return shifts
     }catch (e) {
         // res.send('Wrong username/password')
         // console.log('hey')

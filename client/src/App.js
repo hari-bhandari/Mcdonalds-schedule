@@ -7,7 +7,6 @@ import About from "./components/About";
 import Home from "./components/Pages/Home";
 import AuthState from "./context/auth/AuthState";
 import setAuthToken from "./utils/setAuthToken";
-
 if(localStorage.token){
     setAuthToken(localStorage.token)
 }
@@ -19,8 +18,8 @@ function App() {
                 <Router>
                     <Navbar/> {/*Navbar*/}
                     <Switch>
-                        <Route exact path={'/'} component={Home}/>
-                        <Route exact path={'/login'} component={Login}/>
+                        <Route exact path={'/schedule'} component={Home}/>
+                        <Route exact path={'/'} component={Login}/>
                         <Route exact path={'/about'} component={About}/>
 
                     </Switch>

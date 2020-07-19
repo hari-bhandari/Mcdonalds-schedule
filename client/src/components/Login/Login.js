@@ -1,17 +1,35 @@
-import React, {useState,useContext} from 'react';
+import React, {useState, useContext, useEffect} from 'react';
 import './login.css'
 import AuthContext from '../../context/auth/authContext'
+import Spinner from "../spinner/Spinner";
+
 const Login = (props) => {
     const authContext=useContext(AuthContext)
-    const {getUserLoggedIn,isAuthenticated,error,clearErrors}=authContext;
+    const {getUserLoggedIn,isAuthenticated,loadUser}=authContext;
+    useEffect(()=>{
+        loadUser()
+        // eslint-disable-next-line
+    },[])
+    useEffect(()=>{
+
+        if(isAuthenticated){
+            props.history.push('/schedule')
+        }
+        // eslint-disable-next-line
+    },[isAuthenticated])
+
     const[user,setUser]=useState('')
     const[password,setPassword]=useState('')
-    const onSubmit=(e)=>{
+    let loaded=true
+    const onSubmit=async (e)=>{
+        loaded=false
         e.preventDefault()
-        getUserLoggedIn({userId:user,password})
-        props.history.push('/')
+        await getUserLoggedIn({userId:user,password})
+        loaded=true
+        props.history.push('/schedule')
     }
     return (
+        loaded?(
         <div className={'container1'}>
             <div className="container">
                 <div className="row">
@@ -55,6 +73,7 @@ const Login = (props) => {
             </div>
 
         </div>
+        ):(<div><Spinner/></div>)
     );
 };
 

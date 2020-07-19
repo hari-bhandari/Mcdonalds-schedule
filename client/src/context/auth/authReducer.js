@@ -1,5 +1,5 @@
 import {
-    GET_TOKEN, REMOVE_TOKEN, LOAD_USER, UPDATE_DETAILS, REQUEST_DENIED, CLEAR_ERRORS, LOGOUT, LOAD_USER_FAIL
+    GET_TOKEN, REMOVE_TOKEN, LOAD_USER,CLEAR_ERRORS, LOGOUT, LOAD_USER_FAIL
 } from '../types'
 export default (state,action)=>{
     switch(action.type){
@@ -13,6 +13,7 @@ export default (state,action)=>{
             }
         case GET_TOKEN:
             localStorage.setItem('token',action.payload)
+            console.log(action)
             return{
                 ...state,
                 token:action.payload,
@@ -41,21 +42,23 @@ export default (state,action)=>{
                 error:null
             }
         case LOGOUT:
-        case REQUEST_DENIED:
             localStorage.removeItem('token')
+            window.location.reload(false);
             return {
                 ...state,
                 token:null,
                 isAuthenticated: false,
                 loading: false,
                 user:null,
-                error:action.payload
+                error:action.payload,
+                schedule: {}
             }
         case CLEAR_ERRORS:
             return {
                 ...state,
                 error: null
             }
+
 
 
         default:

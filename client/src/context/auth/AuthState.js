@@ -52,9 +52,8 @@ const AuthState=props=>{
                 payload: res.data.token
             });
             await loadUser();
-        
-
         } catch (err) {
+            console.log(err.response.data.error)
             dispatch({
                 type: REMOVE_TOKEN,
                 payload: err.response.data.error
@@ -90,7 +89,7 @@ const AuthState=props=>{
         dispatch({
             type: LOGOUT,
         });
-        await axios.get(`/api/v1/auth/logout`);
+        // await axios.get(`/api/v1/auth/logout`);
 
 
         // try {
