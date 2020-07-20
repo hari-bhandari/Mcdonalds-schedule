@@ -97,7 +97,9 @@ const sendTokenResponse=(user,statusCode,res)=>{
     })
 }
 const handleSchedule=asyncHandler(async (data,userId,res)=>{
+    console.log(data)
     if(Object.keys(data).length===7){
+
         return data
     }
     else {
