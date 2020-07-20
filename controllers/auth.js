@@ -77,7 +77,7 @@ exports.schedule=asyncHandler(async (req,res,next)=>{
         const users=await User.find()
     for (let user of users) {
         const schedule=await user.postSchedule(user.userId)
-        await handleScheduleForBulk(schedule, user.userId)
+        await handleSchedule(schedule, user.userId)
     }
 })
 
@@ -108,16 +108,5 @@ const handleSchedule=asyncHandler(async (data,userId,res)=>{
         if(res) {
             res.status(401).json({error: 'Authentication Failed'})
         }
-    }
-})
-const handleScheduleForBulk=asyncHandler(async (data,userId)=>{
-    if(Object.keys(data).length===1 || data===undefined || data===null || data===0||Object.keys(data).length===0 ){
-        const schedule=await User.findOneAndUpdate({userId:userId},{error:'Authentication Error.Did you reset your password?'},{
-            new:true,
-            runValidators:true
-        })
-    }
-    else{
-        return data
     }
 })
