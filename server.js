@@ -61,7 +61,7 @@ const cronJob = cron.job('0 0 * * *', async function(){
 
 });
 cronJob.start();
-// schedule()
+schedule()
 
 if (process.env.NODE_ENV === 'production') {
     // Set static folder
