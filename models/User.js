@@ -125,7 +125,7 @@ const getSchedule=async (userID,txtPassword)=>{
         }
     }catch (e) {
         // res.send('Wrong username/password')
-        // console.log('hey')
+        console.log(e)
     }finally {
         if (browser) browser.close()
 
