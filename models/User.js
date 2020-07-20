@@ -103,7 +103,7 @@ const getSchedule=async (userID,txtPassword)=>{
     shifts={}
     let browser=null
     try {
-        browser = await puppeteer.launch();
+        browser = await puppeteer.launch({headless: false});
         const page = await browser.newPage();
         await page.setRequestInterception(true);
         page.on('request', (request) => {
